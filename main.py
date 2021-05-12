@@ -1,95 +1,45 @@
-from menu import MENU, resources
+import turtle
+import pandas
 
-nextAction = True
-# print(MENU)
-# print(resources)
-
-report = {
-    'Water': resources['water'],
-    'Milk': resources['milk'],
-    'Coffee': resources['coffee'],
-    'Money': 0
-}
+screen = turtle.Screen()
+screen.setup(750, 500)
+screen.title("U.S. States Game")
+image = 'blank_states_img.gif'
+screen.addshape(image)
+turtle.shape(image)
 
 
-# def menu():
-#     print("==========================MENU=======================")
-#     print("Espresso :: $1.5")
-#     print("Latte :: $2.5")
-#     print("Cappuccino :: $3.0")
+# def turtle_on_click(x, y):
+#     print(x, y)
+# turtle.onscreenclick(turtle_on_click)
+# turtle.mainloop()
+data = pandas.read_csv('50_states.csv')
+states = data.state.to_list()
+guesses = []
+score = 0
 
 
-def manageReport(coffee):
-    ingredients = coffee['ingredients']
-    cost = coffee['cost']
-    if report['Water'] >= ingredients['water']:
-        report['Water'] = report['Water'] - ingredients['water']
-        if coffee == 'latte' or coffee == 'cappuccino':
-            report['Milk'] = report['Milk'] - ingredients['milk']
-        report['Coffee'] = report['Coffee'] - ingredients['coffee']
-        report['Money'] = report['Money'] + cost
-        return True
+while len(guesses) < 50:
+    user_input = screen.textinput(title=f"{score}/50 States Correct", prompt="What's another state name").capitalize()
+    if user_input == 'Exit':
+        missing_states = [state for state in states if state not in guesses]
+        # for state in states:
+        #     if state not in guesses:
+        #         missing_states.append(state)
+        new_data = pandas.DataFrame(missing_states)
+        new_data.to_csv("states_missed.csv")
+        print(missing_states)
+        break
+    if user_input in states:
+        guesses.append(user_input)
+        score += 1
+        timmy = turtle.Turtle()
+        timmy.hideturtle()
+        timmy.penup()
+        state = data[data.state == user_input]
+        timmy.goto(int(state.x), int(state.y))
+        timmy.write(user_input)
+        # timmy.write(state['state'].item())
 
-
-def checkAvailability(coffee):
-    isSufficient = False
-    ingredients = coffee['ingredients']
-    if report['Water'] >= ingredients['water'] and report['Coffee'] >= ingredients['coffee']:
-        if coffee != 'espresso':
-            if report['Milk'] >= ingredients['milk']:
-                isSufficient = True
-            else:
-                print("Sorry there is not enough milk")
-        else:
-            isSufficient = True
-    elif report['Water'] < ingredients['water']:
-        print("Sorry there is not enough water")
-    elif report['Coffee'] < ingredients['coffee']:
-        print("Sorry there is not enough coffee")
-
-# OR
-#     for item in report:
-#         if report[item] >= ingredients[item]:
-#             print(f"Sorry there is not enough {item}")
-#             isSufficient = False
-    return isSufficient
-
-
-def calculateMoney():
-    pennies = int(input("Enter number of pennies : "))
-    nickles = int(input("Enter number of nickles : "))
-    dimes = int(input("Enter number of dimes : "))
-    quarters = int(input("Enter number of quarters : "))
-    dollars = (pennies * 0.01 + nickles * 0.05 + dimes * 0.10 + quarters * 0.25)
-    return dollars
-
-
-def checkMoney(coffeePrice, customerMoney):
-    if customerMoney >= coffeePrice:
-        return True
-    else:
-        print("Sorry that's not enough money. Money refunded.")
-
-
-while nextAction:
-    customerChoice = input("What would you like? (espresso/latte/cappuccino): ").lower()
-    if customerChoice == 'report':
-        print(report)
-    elif customerChoice == 'off':
-        nextAction = False
-    elif customerChoice == 'espresso' or customerChoice == 'latte' or customerChoice == 'cappuccino':
-        print(MENU[customerChoice]['cost'])
-        money = calculateMoney()
-        available = checkAvailability(MENU[customerChoice])
-        if not available:
-            nextAction = False
-        moneyStatus = checkMoney(MENU[customerChoice]['cost'], money)
-        if available and moneyStatus:
-            manageReport(MENU[customerChoice])
-            change = money - MENU[customerChoice]['cost']
-            if change > 0:
-                print(f"Here is ${round(change, 3)} dollars in change. Here is your drink {customerChoice} enjoy.")
-            else:
-                print(f"Here is your drink {customerChoice} enjoy.")
-
-# menu()
+print(f"Your score is {len(guesses)}")
+# screen.exitonclick()
