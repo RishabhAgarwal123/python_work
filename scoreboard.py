@@ -1,33 +1,38 @@
 from turtle import Turtle
 POSITION = 'center'
-FONT = ('Courier', 80, 'normal')
+FONT = ('Arial', 14, 'bold')
 
 
 class ScoreBoard(Turtle):
 
     def __init__(self):
         super().__init__()
+        self.penup()
+        self.goto(0, 270)
+        with open('data.txt') as file:
+            res = file.read()
+            self.high_score = int(res)
+        self.score = 0
         self.color('white')
         self.hideturtle()
-        self.penup()
-        self.left_score = 0
-        self.right_score = 0
-        self.update_score()
+        self.update_scoreboard()
 
-    def update_score(self):
-        self.goto(-100, 200)
-        self.write(self.left_score, align=POSITION, font=FONT)
-        self.goto(100, 200)
-        self.write(self.right_score, align=POSITION, font=FONT)
-
-    def left_score_increase(self):
-        self.left_score += 1
+    def update_scoreboard(self):
         self.clear()
-        self.update_score()
+        self.write(f"Score : {self.score}  High Score : {self.high_score}", align=POSITION, font=FONT)
 
-    def right_score_increase(self):
-        self.right_score += 1
-        self.clear()
-        self.update_score()
+    def increase_score(self):
+        self.score += 1
+        self.update_scoreboard()
 
+    def reset(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
+            with open('data.txt', mode='w') as file:
+                file.write(str(self.high_score))
+        self.score = 0
 
+    # def game_over(self):
+    #     self.color('red')
+    #     self.goto(0, 0)
+    #     self.write(f"GAME OVER ", align=POSITION, font=FONT)
