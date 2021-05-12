@@ -1,95 +1,48 @@
-from menu import MENU, resources
+###This code will not work in repl.it as there is no access to the colorgram package here.###
+##We talk about this in the video tutorials##
+# import colorgram
+#
+# rgb_colors = []
+# colors = colorgram.extract('image.jpg', 30)
+# for color in colors:
+#     rgb_colors.append(color.rgb)
+#
+# print(rgb_colors)
+# for color in colors:
+#     r = color.rgb.r
+#     g = color.rgb.g
+#     b = color.rgb.b
+#     new_color = (r, g, b)
+#     rgb_colors.append(new_color)
+#
+# print(rgb_colors)
+import turtle as t
+import random
 
-nextAction = True
-# print(MENU)
-# print(resources)
+t.colormode(255)
+timmy = t.Turtle()
+timmy.penup()
+timmy.hideturtle()
 
-report = {
-    'Water': resources['water'],
-    'Milk': resources['milk'],
-    'Coffee': resources['coffee'],
-    'Money': 0
-}
+color_list = [(202, 164, 110), (240, 245, 241), (236, 239, 243), (149, 75, 50), (222, 201, 136), (53, 93, 123),
+              (170, 154, 41), (138, 31, 20), (134, 163, 184), (197, 92, 73), (47, 121, 86), (73, 43, 35),
+              (145, 178, 149), (14, 98, 70), (232, 176, 165), (160, 142, 158), (54, 45, 50), (101, 75, 77),
+              (183, 205, 171), (36, 60, 74), (19, 86, 89), (82, 148, 129), (147, 17, 19), (27, 68, 102), (12, 70, 64),
+              (107, 127, 153), (176, 192, 208), (168, 99, 102)]
 
+timmy.setheading(225)
+timmy.forward(300)
+timmy.setheading(0)
+for dot in range(1, 101):
+    timmy.dot(20, random.choice(color_list))
+    timmy.forward(50)
 
-# def menu():
-#     print("==========================MENU=======================")
-#     print("Espresso :: $1.5")
-#     print("Latte :: $2.5")
-#     print("Cappuccino :: $3.0")
+    if dot % 10 == 0:
+        timmy.setheading(90)
+        timmy.forward(50)
+        timmy.setheading(180)
+        timmy.forward(500)
+        timmy.setheading(0)
 
-
-def manageReport(coffee):
-    ingredients = coffee['ingredients']
-    cost = coffee['cost']
-    if report['Water'] >= ingredients['water']:
-        report['Water'] = report['Water'] - ingredients['water']
-        if coffee == 'latte' or coffee == 'cappuccino':
-            report['Milk'] = report['Milk'] - ingredients['milk']
-        report['Coffee'] = report['Coffee'] - ingredients['coffee']
-        report['Money'] = report['Money'] + cost
-        return True
-
-
-def checkAvailability(coffee):
-    isSufficient = False
-    ingredients = coffee['ingredients']
-    if report['Water'] >= ingredients['water'] and report['Coffee'] >= ingredients['coffee']:
-        if coffee != 'espresso':
-            if report['Milk'] >= ingredients['milk']:
-                isSufficient = True
-            else:
-                print("Sorry there is not enough milk")
-        else:
-            isSufficient = True
-    elif report['Water'] < ingredients['water']:
-        print("Sorry there is not enough water")
-    elif report['Coffee'] < ingredients['coffee']:
-        print("Sorry there is not enough coffee")
-
-# OR
-#     for item in report:
-#         if report[item] >= ingredients[item]:
-#             print(f"Sorry there is not enough {item}")
-#             isSufficient = False
-    return isSufficient
-
-
-def calculateMoney():
-    pennies = int(input("Enter number of pennies : "))
-    nickles = int(input("Enter number of nickles : "))
-    dimes = int(input("Enter number of dimes : "))
-    quarters = int(input("Enter number of quarters : "))
-    dollars = (pennies * 0.01 + nickles * 0.05 + dimes * 0.10 + quarters * 0.25)
-    return dollars
-
-
-def checkMoney(coffeePrice, customerMoney):
-    if customerMoney >= coffeePrice:
-        return True
-    else:
-        print("Sorry that's not enough money. Money refunded.")
-
-
-while nextAction:
-    customerChoice = input("What would you like? (espresso/latte/cappuccino): ").lower()
-    if customerChoice == 'report':
-        print(report)
-    elif customerChoice == 'off':
-        nextAction = False
-    elif customerChoice == 'espresso' or customerChoice == 'latte' or customerChoice == 'cappuccino':
-        print(MENU[customerChoice]['cost'])
-        money = calculateMoney()
-        available = checkAvailability(MENU[customerChoice])
-        if not available:
-            nextAction = False
-        moneyStatus = checkMoney(MENU[customerChoice]['cost'], money)
-        if available and moneyStatus:
-            manageReport(MENU[customerChoice])
-            change = money - MENU[customerChoice]['cost']
-            if change > 0:
-                print(f"Here is ${round(change, 3)} dollars in change. Here is your drink {customerChoice} enjoy.")
-            else:
-                print(f"Here is your drink {customerChoice} enjoy.")
-
-# menu()
+screen = t.Screen()
+screen.exitonclick()
