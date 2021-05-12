@@ -1,25 +1,34 @@
-from menu import Menu, MenuItem
-from coffee_maker import CoffeeMaker
-from money_machine import MoneyMachine
+# student_dict = {
+#     "student": ["Angela", "James", "Lily"],
+#     "score": [56, 76, 98]
+# }
+#
+# # Looping through dictionaries:
+# for (key, value) in student_dict.items():
+#     # Access key and value
+#     pass
 
-menu = Menu()
-coffeeMaker = CoffeeMaker()
-moneyMachine = MoneyMachine()
-isOn = True
+import pandas
+
+# student_data_frame = pandas.DataFrame(student_dict)
+
+# Loop through rows of a data frame
+# for (index, row) in student_data_frame.iterrows():
+# Access index and row
+# Access row.student or row.score
+# pass
 
 
-while isOn:
-    options = menu.get_items()
-    userChoice = input(f"What would you like {options}").lower()
-    if userChoice == 'off':
-        isOn = False
-    elif userChoice == 'report':
-        coffeeMaker.report()
-        moneyMachine.report()
-    else:
-        drink = menu.find_drink(userChoice)
-        enoughResources = coffeeMaker.is_resource_sufficient(drink)
-        if enoughResources:
-            success = moneyMachine.make_payment(drink.cost)
-            if success:
-                coffeeMaker.make_coffee(drink)
+# Keyword Method with iterrows()
+# {new_key:new_value for (index, row) in df.iterrows()}
+
+
+# TODO 1. Create a dictionary in this format:
+data = pandas.read_csv('nato_phonetic_alphabet.csv')
+letter_codes = {row.letter: row.code for (index, row) in data.iterrows()}
+
+# TODO 2. Create a list of the phonetic code words from a word that the user inputs.
+user_input = input("Enter your name : ").upper()
+user_codes = list(user_input)
+result = [letter_codes[code] for code in user_codes if code in letter_codes]
+print(result)
