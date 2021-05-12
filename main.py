@@ -1,34 +1,56 @@
-# student_dict = {
-#     "student": ["Angela", "James", "Lily"],
-#     "score": [56, 76, 98]
-# }
-#
-# # Looping through dictionaries:
-# for (key, value) in student_dict.items():
-#     # Access key and value
-#     pass
-
-import pandas
-
-# student_data_frame = pandas.DataFrame(student_dict)
-
-# Loop through rows of a data frame
-# for (index, row) in student_data_frame.iterrows():
-# Access index and row
-# Access row.student or row.score
-# pass
+from turtle import Screen
+from paddle import Paddle
+from ball import Ball
+from scoreboard import ScoreBoard
+import time
 
 
-# Keyword Method with iterrows()
-# {new_key:new_value for (index, row) in df.iterrows()}
+screen = Screen()
+screen.bgcolor('black')
+screen.setup(width=800, height=600)
+screen.title("PONG")
+screen.tracer(0)
 
 
-# TODO 1. Create a dictionary in this format:
-data = pandas.read_csv('nato_phonetic_alphabet.csv')
-letter_codes = {row.letter: row.code for (index, row) in data.iterrows()}
+left_paddle = Paddle((-350, 0))
+right_paddle = Paddle((350, 0))
+ball = Ball()
+scoreboard = ScoreBoard()
+# ball.refresh()
 
-# TODO 2. Create a list of the phonetic code words from a word that the user inputs.
-user_input = input("Enter your name : ").upper()
-user_codes = list(user_input)
-result = [letter_codes[code] for code in user_codes if code in letter_codes]
-print(result)
+
+screen.listen()
+screen.onkey(left_paddle.move_up, 'w')
+screen.onkey(left_paddle.move_down, 's')
+screen.onkey(right_paddle.move_up, 'Up')
+screen.onkey(right_paddle.move_down, 'Down')
+
+
+game_on = True
+while game_on:
+    time.sleep(ball.move_speed)
+    screen.update()
+    ball.refresh()
+
+    # Detect collision with wall
+    if ball.ycor() > 280 or ball.ycor() < -280:
+        # Bounce ball
+        ball.bounce_y()
+
+    # Detect collision with paddle
+    if ball.distance(right_paddle) < 50 and ball.xcor() > 320 or ball.distance(left_paddle) < 50 and ball.xcor() < -320:
+        print("Contact with right paddle")
+        ball.bounce_x()
+
+    # Ball missed right paddle
+    if ball.xcor() > 380:
+        scoreboard.left_score_increase()
+        ball.reset_ball()
+
+    # Ball missed left paddle
+    if ball.xcor() < -380:
+        scoreboard.right_score_increase()
+        ball.reset_ball()
+
+
+screen.exitonclick()
