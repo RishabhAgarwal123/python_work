@@ -1,62 +1,100 @@
-# student_dict = {
-#     "student": ["Angela", "James", "Lily"],
-#     "score": [56, 76, 98]
-# }
-#
-# # Looping through dictionaries:
-# for (key, value) in student_dict.items():
-#     # Access key and value
-#     pass
-
-import pandas
-not_correct = True
-
-# student_data_frame = pandas.DataFrame(student_dict)
-
-# Loop through rows of a data frame
-# for (index, row) in student_data_frame.iterrows():
-# Access index and row
-# Access row.student or row.score
-# pass
+from tkinter import *
+from tkinter import messagebox
+import random
+import pyperclip
 
 
-# Keyword Method with iterrows()
-# {new_key:new_value for (index, row) in df.iterrows()}
+# ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def generate_password():
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+               'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+               'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    nr_letters = random.randint(8, 10)
+    nr_symbols = random.randint(2, 4)
+    nr_numbers = random.randint(2, 4)
+
+    password_letters = [random.choice(letters) for _ in range(nr_letters)]
+    password_symbols = [random.choice(symbols) for _ in range(nr_symbols)]
+    password_numbers = [random.choice(numbers) for _ in range(nr_numbers)]
+
+    password_list = password_letters + password_symbols + password_numbers
+
+    random.shuffle(password_list)
+    # global randomPassword
+    # for num in range(nr_letters):
+    #     randomPassword = randomPassword + random.choice(letters)
+    # for num in range(nr_symbols):
+    #     randomPassword = randomPassword + random.choice(symbols)
+    # for num in range(nr_numbers):
+    #     randomPassword = randomPassword + random.choice(numbers)
+    # randomPassword = ''.join(random.sample(randomPassword, len(randomPassword)))
+    # for char in password_list:
+    #     randomPassword = randomPassword + char
+    randomPassword = ''.join(password_list)
+    pyperclip.copy(randomPassword)
+    password_entry.insert(0, randomPassword)
+    # print(randomPassword)
+
+# ---------------------------- SAVE PASSWORD ------------------------------- #
 
 
-# TODO 1. Create a dictionary in this format:
-data = pandas.read_csv('nato_phonetic_alphabet.csv')
-letter_codes = {row.letter: row.code for (index, row) in data.iterrows()}
+def save():
+    website = website_entry.get()
+    email = email_entry.get()
+    password = password_entry.get()
 
-# TODO 2. Create a list of the phonetic code words from a word that the user inputs.
-# while not_correct:
-#     result = []
-#     user_input = input("Enter your name : ").upper()
-#     user_codes = list(user_input)
-#     for code in user_codes:
-#         try:
-#             result.append(letter_codes[code])
-#             not_correct = False
-#         except KeyError:
-#             print('Sorry, only letters in the alphabet letters')
-#             break
-#         else:
-#             result = [letter_codes[code] for code in user_codes]
-#             not_correct = False
-#     if len(result) > 0:
-#         print(result)
-
-
-def generate():
-    user_input = input("Enter your name : ").upper()
-    user_codes = list(user_input)
-    try:
-        result = [letter_codes[code] for code in user_codes]
-    except KeyError:
-        print('Sorry, only letters in the alphabet letters')
-        generate()
+    if len(website) > 0 and len(password) > 0:
+        user_data = f'{website} | {email} | {password}'
+        valid = messagebox.askokcancel(title=website, message=f'These are details entered: \n{user_data}')
+        if valid:
+            with open('user data.txt', mode='a') as file:
+                file.write(user_data + '\n')
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
     else:
-        print(result)
+        messagebox.showinfo(title='oops', message='Do not leave any field empty')
 
 
-generate()
+# ---------------------------- UI SETUP ------------------------------- #
+window = Tk()
+window.title('PASSWORD MANAGER')
+window.config(padx=50, pady=50)
+
+# Create Canvas
+canvas = Canvas(width=200, height=200)
+img = PhotoImage(file='logo.png')
+canvas.create_image(100, 100, image=img)
+canvas.grid(column=1, row=0)
+
+# Creating Labels
+website_label = Label(text="Website :")
+website_label.grid(column=0, row=1)
+
+email_label = Label(text="Email/Username :")
+email_label.grid(column=0, row=2)
+
+password_label = Label(text="Password :")
+password_label.grid(column=0, row=3)
+
+# Input User Data
+website_entry = Entry(width=35)
+website_entry.grid(column=1, row=1, columnspan=2)
+website_entry.focus()
+
+email_entry = Entry(width=35)
+email_entry.grid(column=1, row=2, columnspan=2)
+email_entry.insert(0, 'rishabh@gmail.com')
+
+password_entry = Entry(width=21)
+password_entry.grid(column=1, row=3)
+
+# Creating Button
+generate_password = Button(text='Generate', command=generate_password)
+generate_password.grid(column=2, row=3)
+
+add = Button(text='Add', width=36, command=save)
+add.grid(column=1, row=4, columnspan=2)
+window.mainloop()
