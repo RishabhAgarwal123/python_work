@@ -9,6 +9,7 @@
 #     pass
 
 import pandas
+not_correct = True
 
 # student_data_frame = pandas.DataFrame(student_dict)
 
@@ -28,7 +29,34 @@ data = pandas.read_csv('nato_phonetic_alphabet.csv')
 letter_codes = {row.letter: row.code for (index, row) in data.iterrows()}
 
 # TODO 2. Create a list of the phonetic code words from a word that the user inputs.
-user_input = input("Enter your name : ").upper()
-user_codes = list(user_input)
-result = [letter_codes[code] for code in user_codes if code in letter_codes]
-print(result)
+# while not_correct:
+#     result = []
+#     user_input = input("Enter your name : ").upper()
+#     user_codes = list(user_input)
+#     for code in user_codes:
+#         try:
+#             result.append(letter_codes[code])
+#             not_correct = False
+#         except KeyError:
+#             print('Sorry, only letters in the alphabet letters')
+#             break
+#         else:
+#             result = [letter_codes[code] for code in user_codes]
+#             not_correct = False
+#     if len(result) > 0:
+#         print(result)
+
+
+def generate():
+    user_input = input("Enter your name : ").upper()
+    user_codes = list(user_input)
+    try:
+        result = [letter_codes[code] for code in user_codes]
+    except KeyError:
+        print('Sorry, only letters in the alphabet letters')
+        generate()
+    else:
+        print(result)
+
+
+generate()
